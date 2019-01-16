@@ -42,8 +42,8 @@ escodegen  可以把树再加工转成源代码
 ### 过程总结
 ```
 到这里我们始终都没有提到任何代码，只是在述说的过程中引出了3个库而已。有了这三个库就可以对我们的js代码进行多样化处理，只要你想到的。甚至可以打造自己的编译器了。
-总结下整个的处理过程：
-JS Code ---- 》 AST ----> Translate ast -----> distCode
+看图理解整个处理过程：
+![avatar](http://baidu.com/pic/doge.png)
 这个过程是多么的简单，清晰，所以说ast真的是超级简单，但是功能超级好玩、超级强大。代码可以被你任意的蹂躏了。
 
 ```
@@ -57,7 +57,7 @@ JS Code ---- 》 AST ----> Translate ast -----> distCode
 2. 把 == 改为全等 ===
 3. 遇到parsetInt使用不标准的改为标准用法  parseInt(a)-> parseInt(a,10)
 
-先看看ast的容貌
+先看看ast美不美
 
 
 ```
