@@ -1,0 +1,15 @@
+.uto-imgs{
+    .title{
+        color:#ccc;
+        border:solid 1px #ccc;
+    }
+    .name{
+        font-size: 20px;
+    }
+}
+
+    .box{
+        .name{
+            color:#ccc;
+            }    
+    }

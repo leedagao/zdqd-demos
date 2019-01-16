@@ -1,0 +1,22 @@
+{
+  "name": "follaw-demos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "demo0-escodegen": "node ./escodegen-demo/demo0.js",
+    "demo0-esprima": "node ./esprima-demo/demo0.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "escodegen": "^1.11.0",
+    "eslint": "^5.11.1",
+    "esprima": "^4.0.1",
+    "estraverse": "^4.2.0",
+    "node-sass": "^4.10.0",
+    "node-webshot": "^1.0.3",
+    "phantom": "^6.0.3"
+  }
+}
