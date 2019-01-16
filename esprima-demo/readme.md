@@ -43,24 +43,155 @@ escodegen  可以把树再加工转成源代码
 ```
 到这里我们始终都没有提到任何代码，只是在述说的过程中引出了3个库而已。有了这三个库就可以对我们的js代码进行多样化处理，只要你想到的。甚至可以打造自己的编译器了。
 看图理解整个处理过程：
-![avatar](http://baidu.com/pic/doge.png)
+```
+![avatar](https://github.com/bigerfe/follaw-demos/blob/master/esprima-demo/img/trans.png?raw=true)
+
 这个过程是多么的简单，清晰，所以说ast真的是超级简单，但是功能超级好玩、超级强大。代码可以被你任意的蹂躏了。
 
-```
 
 ### 上代码
 ```
 说的再清楚都不够直观，毕竟都是脑补，不如看代码来的爽快。
 这里我就拿日常的一些小问题举例，来演示一下AST的使用。
 
-1. 把代码中console删除 
-2. 把 == 改为全等 ===
-3. 遇到parsetInt使用不标准的改为标准用法  parseInt(a)-> parseInt(a,10)
+1. 把 == 改为全等 ===
+2. 遇到parsetInt使用不标准的改为标准用法  parseInt(a)-> parseInt(a,10)
 
-先看看ast美不美
-
+先看看ast美不美,这里我使用esprima的官方工具生成了ast,工具地址http://esprima.org/demo/parse.html。
 
 ```
+源码
+我们的功能就是针对这段进行操作。
+``` javascript
+//源码
+function fun1() {
+    console.log('fun1');
+}
+function fun2(opt) {
+    if (opt.status == 1) {
+        console.log('1');
+    }
+    if (opt.status == 2) {
+        console.log('2');
+    }
+}
+function fun3(age) {
+    if (parseInt(age) >= 18) {
+        console.log('ok 你已经成年');
+    }
+}
+```
+转成ast,由于转成树后结构非常大，所以这里我只贴了一部分，你也可以到工具页面自己生成下。
+``` javascript
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "FunctionDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "fun1"
+            },
+            "params": [],
+            "body": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "MemberExpression",
+                                "computed": false,
+                                "object": {
+                                    "type": "Identifier",
+                                    "name": "console"
+                                },
+                                "property": {
+                                    "type": "Identifier",
+                                    "name": "log"
+                                }
+                            },
+                            "arguments": [
+                                {
+                                    "type": "Literal",
+                                    "value": "fun1",
+                                    "raw": "'fun1'"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "generator": false,
+            "expression": false,
+            "async": false
+        }
+    ]
+}
+```
+> ast看上去很复杂，仔细看看基本都能看懂。所有的代码都在特定的节点里面。具体的这里就不介绍了。总之这就是一个对象，只要你能对这个对象进行修改、添加、删除即可。
+
+开始实现上面的功能
+---
+1. 基础方法
+``` javascript
+//引入工具包
+const esprima = require('esprima');//JS语法树模块
+const estraverse = require('estraverse');//JS语法树遍历各节点
+const escodegen = require('escodegen');//JS语法树反编译模块
+//获取代码ast
+const AST = esprima.parseScript(jsCode);
+
+/**
+ * 
+ * @param {遍历语法树} ast 
+ */
+function walkIn(ast){
+    estraverse.traverse(ast, {
+        enter: (node) => {
+            toEqual(node);//把 == 改为全等 ===
+            setParseint(node); //parseInt(a)-> parseInt(a,10)
+        }
+    });
+}
+
+```
+2. 把 == 改为全等 ===
+``` javascript
+/**
+ * 设置全等
+ */
+function toEqual(node) {
+    if (node.operator === '==') {
+        node.operator = '===';
+    }
+}
+```
+3. 把parseInt改成标准调用
+``` javascript
+/**
+ * 把parseint改为标准方法
+ * @param {节点} node 
+ */
+function setParseint(node) {
+    if (node.type === 'CallExpression' && node.callee.name === 'parseInt' && node.arguments.length===1){
+        node.arguments.push({
+            "type": "Literal",
+            "value": 10,
+            "raw": "10"
+        });
+    }
+}
+
+//生成目标代码
+const code = escodegen.generate(ast);
+//写入文件.....
+//....
+```
+有兴趣的可以自己搞搞看。代码不多，需求简单，但是目的是为了阐述清楚处理过程。
+ast的节点很多，有些凌乱，操作的时候只要关心自己的需求就可以，你不需要对所有的节点都搞明白。按需处理就可以。
+
 
 ### AST技术被谁用了
 ```
@@ -78,3 +209,11 @@ ast没有技术含量吗？怎么可能呢，如果真这么认为怕是会被�
 因为我也不知道。哈哈哈
 
 ```
+
+### 总结
+我们主要介绍了什么是ast，以及ast的用途，然后通过具体的示例演示了怎样操作ast，最终是希望能对ast有一个系统的认识和理解并能够利用ast打造自己的工具。
+演示代码下载，欢迎star
+https://github.com/bigerfe/follaw-demos/tree/master/esprima-demo 
+写作不易，请多鼓励
+
+欢迎关注本人公众号
