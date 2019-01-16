@@ -216,4 +216,8 @@ ast没有技术含量吗？怎么可能呢，如果真这么认为怕是会被�
 https://github.com/bigerfe/follaw-demos/tree/master/esprima-demo 
 写作不易，请多鼓励
 
-欢迎关注本人公众号
+欢迎关注本人公众号 - 重度前端
+
+![avatar](https://github.com/bigerfe/follaw-demos/blob/master/esprima-demo/img/mycode.jpg?raw=true)
+
+记录个人感悟、分享有价值的技术文章
